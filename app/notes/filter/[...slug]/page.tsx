@@ -1,10 +1,26 @@
 import { fetchNotes } from "@/lib/api";
 import { QueryClient, dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import NotesClient from './Notes.client';
+import { Metadata } from "next";
 
 type Props = {
     params: Promise<{ slug: string[] }>
 };
+
+export const generateMetadata = async ({ params }: Props): Promise<Metadata> => {
+    const { slug } = await params
+    const tag = slug[0];
+    return ({
+        title: `NoteHub — Notes filtered by ${tag}`,
+        description: `Browse your ${tag} notes in NoteHub — easily manage, edit, and organize your notes.`,
+        openGraph: {
+            title: `NoteHub — Notes filtered by ${tag}`,
+            description: `Browse your ${tag} notes in NoteHub — easily manage, edit, and organize your notes.`,
+            url: 'http://localhost:3002/',
+            images: '/public/notehubimage.jpeg',
+        }
+    })
+}
 
 const NotesPage = async ({ params }: Props) => {
     const { slug } = await params;

@@ -1,9 +1,26 @@
 import { getSingleNote } from "@/lib/api";
 import NoteDetailsClient from "./NoteDetails.client";
-import {dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
+import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
+import { Metadata } from "next";
+
 
 type Props = {
     params: Promise<{id:string}>
+}
+
+export const generateMetadata = async ({ params }: Props): Promise<Metadata> => {
+    const { id } = await params;
+    const note = await getSingleNote(id)
+    return ({
+        title: `NoteHub — ${note.title}`,
+        description: `View your note: ${note.content} — manage, edit, and organize your notes easily with NoteHub.`,
+        openGraph: {
+            title: `NoteHub — ${note.title}`,
+            description: `View your note: ${note.content} — manage, edit, and organize your notes easily with NoteHub.`,
+            url: 'http://localhost:3002/',
+            images: '/public/notehubimage.jpeg',
+        }
+    })
 }
 
 const NoteDetailes = async ({params}: Props) => {
