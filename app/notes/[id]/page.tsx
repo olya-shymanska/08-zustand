@@ -18,7 +18,14 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
             title: `NoteHub — ${note.title}`,
             description: `View your note: ${note.content} — manage, edit, and organize your notes easily with NoteHub.`,
             url: 'http://localhost:3002/',
-            images: '/public/notehubimage.jpeg',
+            images: [
+                {
+                  url: "/notehubimage.jpeg",
+                  width: 1200,
+                  height: 630,
+                  alt: `NoteHub — ${note.title}`,
+                },
+              ],
         }
     })
 }

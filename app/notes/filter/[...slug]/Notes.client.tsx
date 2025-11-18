@@ -9,11 +9,10 @@ import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { useDebouncedCallback } from 'use-debounce';
 import { useState } from "react";
 import css from './Notes.module.css'
-import Modal from "@/components/Modal/Modal";
 import Loader from "@/components/Loader/Loader";
 import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
 import ErrorRequest from "@/components/ErrorRequest/ErrorRequest";
-import NoteForm from "@/components/NoteForm/NoteForm";
+import Link from "next/link";
 
 type Props = {
   tag: string;
@@ -23,10 +22,6 @@ function NotesClient({tag}: Props) {
 
   const [inputValue, setinputValue] = useState('');
   const [page, setPage] = useState(1);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
 
   const {data, isSuccess, isLoading, isFetching, isError} = useQuery({
     queryKey: ['notes', inputValue, page, tag],
@@ -61,7 +56,7 @@ function NotesClient({tag}: Props) {
             onPageChange={setPage}
           />
         )}
-        <button className={css.button} onClick={openModal}>Create +</button>
+        <Link href={'/notes/action/create'} className={css.button} >Create +</Link>
       </header>
 
       {isLoading || isFetching ? (
@@ -73,11 +68,6 @@ function NotesClient({tag}: Props) {
     ) : (
       <ErrorRequest />
     )}
-      {isModalOpen && (
-        <Modal onClose={closeModal} >
-          <NoteForm onClose={closeModal}/>
-        </Modal>
-      )}
      
       </div>
   )

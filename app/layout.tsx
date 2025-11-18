@@ -20,7 +20,14 @@ export const metadata: Metadata = {
     title: "NoteHub",
     description: "NoteHub — a simple and fast app for creating, organizing, and managing your notes.",
     url: "http://localhost:3002/",
-    images: '/public/notehubimage.jpeg',
+    images: [
+      {
+        url: "/notehubimage.jpeg",
+        width: 1200,
+        height: 630,
+        alt: "NoteHub",
+      },
+    ],
   }
 };
 
