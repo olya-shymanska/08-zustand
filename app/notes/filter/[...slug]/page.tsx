@@ -16,7 +16,6 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
         openGraph: {
             title: `NoteHub — Notes filtered by ${tag}`,
             description: `Browse your ${tag} notes in NoteHub — easily manage, edit, and organize your notes.`,
-            url: 'http://localhost:3002/',
             images: [
                 {
                   url: "/notehubimage.jpeg",
