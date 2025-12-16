@@ -1,18 +1,28 @@
 'use client'
 import { useId } from "react";
 import css from './NoteForm.module.css'
-import { noteAction } from "@/lib/action/noteAction";
 import { useNoteDraftStore } from "@/lib/store/noteStore";
 import { useRouter } from 'next/navigation';
 import { initialDraft } from "@/lib/store/noteStore";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation} from "@tanstack/react-query";
+import { createNote } from "@/lib/api";
+import { NewNote } from "@/types/newNote";
 
 export default function NoteForm() {
 
+    const fieldId = useId();
+
     const router = useRouter();
-    const queryClient = useQueryClient();
 
     const { draft, setDraft, clearDraft } = useNoteDraftStore();
+
+    const {mutate, isPending} = useMutation({
+        mutationFn: createNote,
+        onSuccess: () => {
+            clearDraft();
+            router.push('/notes/filter/All');
+        }
+    })
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         setDraft({ ...draft, [e.target.name]: e.target.value });
@@ -20,14 +30,11 @@ export default function NoteForm() {
     
     const safeDraft = { ...initialDraft, ...draft, tag: draft.tag || 'Todo' };
 
-    const handleSubmit = async (formData: FormData) => {
-        await noteAction(formData);
-        clearDraft();
-        queryClient.invalidateQueries({ queryKey: ['notes'], exact: false });
-        router.back();
+    const handleSubmit = (formData: FormData) => {
+        const values = Object.fromEntries(formData) as unknown as NewNote;
+        mutate(values);
     };
 
-    const fieldId = useId();
     return (
         <form action={handleSubmit}>
             <div className={css.formGroup}>
@@ -53,8 +60,8 @@ export default function NoteForm() {
             </div>
 
             <div className={css.actions}>
-                <button type="button" className={css.cancelButton} onClick={() => router.back()}>Cancel</button>
-                <button type="submit" disabled={false} className={css.submitButton}>Create Note</button>
+                <button type="button" className={css.cancelButton} onClick={() => router.push('/notes/filter/All')}>Cancel</button>
+                <button type="submit" disabled={false} className={css.submitButton}>{isPending ? 'Creating Note...' : 'Create Note'}</button>
             </div>
             </form>
  )
