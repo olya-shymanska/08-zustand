@@ -10,7 +10,7 @@ export default function SearchBox({ value, onSearch }: SearchBoxProps) {
         onSearch(event.target.value);
     }
     return (
-        <input type="text" defaultValue={value}
+        <input type="text" value={value}
             onChange={handleChange}
             placeholder="Search notes"
             className={css.input}

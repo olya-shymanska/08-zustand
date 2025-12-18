@@ -8,12 +8,12 @@ export const metadata: Metadata = {
         title: 'Page not found',
         description: 'This page does not exist or may have been moved. Please return to NoteHub to continue browsing your notes.',
         url: 'https://08-zustand-qo50bjpjr-olha-shymanskas-projects.vercel.app/',
-        images: '/public/notehubimage.jpeg'
+        images: ['/notehubimage.jpeg', ], 
     }
 }
 
 
-export default function notFound() {
+export default function NotFound() {
     return ( 
         <div>
     <h1 className={css.title}>404 - Page not found</h1>

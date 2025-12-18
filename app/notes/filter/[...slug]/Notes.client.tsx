@@ -11,7 +11,7 @@ import { useState } from "react";
 import css from './Notes.module.css'
 import Loader from "@/components/Loader/Loader";
 import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
-import ErrorRequest from "@/components/ErrorRequest/ErrorRequest";
+import EmptyNotes from "@/components/EmptyNotes/EmptyNotes";
 import Link from "next/link";
 
 type Props = {
@@ -21,11 +21,12 @@ type Props = {
 function NotesClient({tag}: Props) {
 
   const [inputValue, setinputValue] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(1);
 
   const {data, isSuccess, isLoading, isFetching, isError} = useQuery({
-    queryKey: ['notes', inputValue, page, tag],
-      queryFn: () => fetchNotes({ query: inputValue, page: page, ...(tag !== 'All' ? { tag } : {})}),
+    queryKey: ['notes', searchQuery, page, tag],
+      queryFn: () => fetchNotes({ query: searchQuery, page: page, ...(tag !== 'All' ? { tag } : {})}),
       refetchOnMount: false,
     placeholderData: keepPreviousData,
   });
@@ -36,19 +37,24 @@ function NotesClient({tag}: Props) {
   
 
   const updateSearchQuery = useDebouncedCallback(
-    (searchTopic: string) => {
-      setinputValue(searchTopic);
+    (value: string) => {
+      setSearchQuery(value);
       setPage(1);
     },
     300
   );
+
+  const handleSearchChange = (value: string) => {
+    setinputValue(value);
+    updateSearchQuery(value); 
+  }
 
   const totalPages = data?.totalPages ?? 0;
 
   return (
     <div className={css.app}>
       <header className={css.toolbar}>
-        <SearchBox value={inputValue} onSearch={updateSearchQuery} />
+        <SearchBox value={inputValue} onSearch={handleSearchChange} />
      {isSuccess && totalPages > 0 &&  (
           <Pagination
             pageCount={totalPages}
@@ -66,7 +72,7 @@ function NotesClient({tag}: Props) {
     ) : data && data.notes.length > 0 ? (
       <NoteList notes={data.notes} />
     ) : (
-      <ErrorRequest />
+      <EmptyNotes />
     )}
      
       </div>
